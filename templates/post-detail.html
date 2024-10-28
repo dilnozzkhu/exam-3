@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+{% load blog_tags %}
+<!-- /navigation -->
+<section class="section">
+	<div class="container">
+		<!-- Article Content -->
+		<article class="row mb-4">
+			<div class="col-lg-10 mx-auto mb-4">
+				<h1 class="h2 mb-3">{{ detail.title }}</h1>
+				<ul class="list-inline post-meta mb-3">
+					<li class="list-inline-item"><i class="ti-user mr-2"></i><a href="author.html">{{ detail.user }}</a></li>
+					<li class="list-inline-item">Date : {{ detail.publish }}</li>
+					<li class="list-inline-item">Categories : <a href="#!" class="ml-1">Photobooth </a></li>
+							<li class="list-inline-item">Tags :
+                                {% for tag in detail.tags.all %}
+                                <a href="#" class="ml-1">{{ tag.name }} </a> {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+							</li>
+				</ul>
+			</div>
+			<div class="col-12 mb-3">
+				<div class="post-slider">
+                    {% for image in detail.images.all %}
+                    <img src="{{ image.image.url }}" class="img-fluid" alt="post-thumb">
+
+                    {% endfor %}
+				</div>
+			</div>
+			<div class="col-lg-10 mx-auto">
+				<div class="content">
+                    <p>
+                        {{ detail.body|markdown   }}
+                    </p>
+				</div>
+			</div>
+		</article>
+
+      <!-- Comments Section -->
+      <div class="row mb-4">
+         <div class="col-lg-10 mx-auto">
+             {% if detail.comments.exists %}
+                <h3 class="mb-3">Comments</h3>
+
+             {% else %}
+                <h3 class="mb-3">No comments yet.</h3>
+            {% endif %}
+
+             <div class="comments">
+
+            {% for comment in detail.comments.all %}
+
+               <div class="comment mb-4">
+                  <p><strong>{{ comment.name }}</strong> <small class="text-muted">- {{ comment.publish }}</small></p>
+                  <p>{{ comment.body }}</p>
+               </div>
+            {% endfor %}
+
+            </div>
+         </div>
+      </div>
+
+		<!-- Add Comment Form -->
+		<div class="row mb-4">
+			<div class="col-lg-10 mx-auto">
+				<h3 class="mb-4">Add a Comment</h3>
+				<form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">Comment:</label>
+                        <textarea class="form-control" id="comment" name="body" rows="5" required></textarea>
+                    </div>
+<!--                    {{ form.as_p }}-->
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+			</div>
+		</div>
+    <!-- Similar Posts Section -->
+<div class="row mb-4">
+    <div class="col-lg-10 mx-auto">
+        <h3 class="mb-4">Similar Posts</h3>
+        <div class="row">
+            {% for post in similar_posts %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if post.images.all %}
+                    <img src="{{ post.images.first.image.url }}" class="img-fluid" alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+                        <p class="card-text">{{ post.body|truncatewords:20 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="col-12">There are no similar posts yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+	</div>
+</section>
+
+
+{% endblock %}

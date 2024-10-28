@@ -1,0 +1,21 @@
+{% load blog_tags %}
+
+    {% for post in latest_posts %}
+
+      <ul class="list-unstyled widget-list">
+         <li class="media widget-post align-items-center">
+            <a href="{{ post.get_absolute_url }}">
+                {% if post.images.all %}
+                {% with post.images.all|first as first_image %}
+                    <img loading="lazy" src="{{ first_image.image.url }}" class="mr-3" alt="post-thumb" >
+                {% endwith %}
+            {% endif %}
+            </a>
+            <div class="media-body">
+               <h5 class="h6 mb-0"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+               <small>{{ post.publish }}</small>
+            </div>
+         </li>
+      </ul>
+    {% endfor %}
+
